@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3001;
 
 let items = []; // This will act as our in-memory database
 let itemId = 0;
 
+app.use(cors());
 app.use(express.json());
 
 // GET items
