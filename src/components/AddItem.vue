@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <input v-model="inputText" placeholder="Add item..." />
-    <button @click="addItem">Add</button>
+  <div class="add-item">
+    <input
+        v-model="inputText"
+        placeholder="Add item..."
+        class="input-group-field"
+    />
+    <button @click="addItem" class="button primary">Add</button>
   </div>
 </template>
 
@@ -27,3 +31,33 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.add-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.input-group-field {
+  font-size: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  flex: 1;
+  align-self: flex-start;
+  max-width: 400px;
+}
+.button {
+  font-size: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.primary {
+  background-color: #007bff;
+  color: #fff;
+}
+</style>

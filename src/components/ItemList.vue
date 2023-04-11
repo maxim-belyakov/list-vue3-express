@@ -1,14 +1,13 @@
 <template>
-  <div>
-    <Item
-        v-for="item in items"
-        :key="item.id"
-        :item="item"
-        :class="{ selected: item.selected }"
-        @item-selected="selectItem"
-        @item-removed="removeItem"
-    />
-  </div>
+  <transition-group name="item" tag="div">
+    <div v-for="item in items" :key="item.id">
+      <Item
+          :item="item"
+          @item-selected="selectItem"
+          @item-removed="removeItem"
+      />
+    </div>
+  </transition-group>
 </template>
 
 <script lang="ts">
@@ -49,7 +48,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .selected {
-    background-color: #2c8f6f;
-  }
+.item-enter-active, .item-leave-active {
+  transition: all 0.5s ease;
+}
+.item-enter-from, .item-leave-to {
+  height: 0;
+  opacity: 0;
+}
+.item-enter-to, .item-leave-from {
+  height: auto;
+  opacity: 1;
+}
 </style>

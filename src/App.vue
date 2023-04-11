@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <h1>Item List</h1>
-    <AddItem @item-added="addItem" />
-    <ItemList :items="items" @item-updated="updateItem" @item-removed="removeItem" />
+    <div class="container">
+      <h1>Item List</h1>
+      <AddItem @item-added="addItem" />
+      <ItemList :items="items" @item-updated="updateItem" @item-removed="removeItem" />
+    </div>
   </div>
 </template>
 
@@ -54,3 +56,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+  .container {
+    max-width: 960px; /* Set the max-width of the container as desired */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 20px; /* Add some padding around the container */
+  }
+</style>
