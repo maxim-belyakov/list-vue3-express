@@ -1,6 +1,14 @@
+import { createStore } from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import ItemList from '@/components/ItemList.vue';
 import { ItemType } from '@/resources/interfaces';
+
+const mockStore = createStore({
+    state: {},
+    actions: {},
+    mutations: {},
+    getters: {},
+});
 
 describe('ItemList.vue', () => {
     it('renders a list of items', () => {
@@ -11,6 +19,11 @@ describe('ItemList.vue', () => {
 
         const wrapper = shallowMount(ItemList, {
             props: { items },
+            global: {
+                provide: {
+                    store: mockStore,
+                },
+            },
         });
 
         const renderedItems = wrapper.findAllComponents({ name: 'Item' });
@@ -22,6 +35,11 @@ describe('ItemList.vue', () => {
 
         const wrapper = shallowMount(ItemList, {
             props: { items: [item] },
+            global: {
+                provide: {
+                    store: mockStore,
+                },
+            },
         });
 
         wrapper.findComponent({ name: 'Item' }).vm.$emit('item-selected', item);
@@ -36,6 +54,11 @@ describe('ItemList.vue', () => {
 
         const wrapper = shallowMount(ItemList, {
             props: { items: [item] },
+            global: {
+                provide: {
+                    store: mockStore,
+                },
+            },
         });
 
         wrapper.findComponent({ name: 'Item' }).vm.$emit('item-removed', item);
