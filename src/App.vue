@@ -7,16 +7,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import axios from 'axios';
+import {computed, defineComponent, onMounted} from 'vue';
 import ItemList from './components/ItemList.vue';
 import AddItem from './components/AddItem.vue';
-
-interface Item {
-  id: number;
-  text: string;
-  selected?: boolean;
-}
+import { Item } from "./resources/interfaces";
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'App',
@@ -25,49 +20,33 @@ export default defineComponent({
     AddItem,
   },
   setup() {
-    const items = ref<Item[]>([]);
-
-    async function fetchItems() {
-      try {
-        const response = await axios.get<Item[]>('http://localhost:3001/items');
-        items.value = response.data as Item[];
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    }
+    const store = useStore();
 
     function addItem(item: { text: string }) {
-      // Add your logic for adding a new item
       const newItem: Item = {
-        id: Date.now(), // or another unique ID generator
+        id: Date.now(),
         text: item.text,
       };
-      items.value.push(newItem);
+      store.commit('addItem', newItem);
     }
 
     function selectItem(selectedItem: Item) {
-      items.value = items.value.map(item => ({
-        ...item,
-        selected: item.id === selectedItem.id,
-      }));
+      store.dispatch('selectItem', selectedItem);
     }
 
-    async function removeItem(removedItem: Item) {
-      try {
-        await axios.delete(`http://localhost:3001/items/${removedItem.id}`);
-        items.value = items.value.filter(item => item.id !== removedItem.id);
-      } catch (error) {
-        console.error('Error removing item:', error);
-      }
+    function removeItem(removedItem: Item) {
+      store.dispatch('removeItem', removedItem.id);
     }
 
-    onMounted(fetchItems);
+    onMounted(() => {
+      store.dispatch('fetchItems');
+    });
 
     return {
-      items,
+      items: computed(() => store.state.items),
       addItem,
-      removeItem,
       selectItem,
+      removeItem,
     };
   },
 });

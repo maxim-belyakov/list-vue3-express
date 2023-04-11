@@ -8,11 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-interface Item {
-  id: number;
-  text: string;
-}
+import { Item } from "../resources/interfaces";
 
 export default defineComponent({
   name: 'Item',
