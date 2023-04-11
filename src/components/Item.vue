@@ -6,19 +6,32 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+interface Item {
+  id: number;
+  text: string;
+}
+
+export default defineComponent({
   name: 'Item',
   props: {
-    item: Object,
+    item: Object as () => Item,
   },
-  methods: {
-    selectItem() {
-      this.$emit('item-selected', this.item);
-    },
-    removeItem() {
-      this.$emit('item-removed', this.item);
-    },
+  setup(_, { emit }) {
+    function selectItem() {
+      emit('item-selected', this.item);
+    }
+
+    function removeItem() {
+      emit('item-removed', this.item);
+    }
+
+    return {
+      selectItem,
+      removeItem,
+    };
   },
-};
+});
 </script>

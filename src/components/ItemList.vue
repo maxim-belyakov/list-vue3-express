@@ -4,24 +4,36 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import Item from './Item.vue';
 
-export default {
+interface Item {
+  id: number;
+  text: string;
+}
+
+export default defineComponent({
   name: 'ItemList',
   components: {
     Item,
   },
   props: {
-    items: Array,
+    items: Array as () => Item[],
   },
-  methods: {
-    selectItem(item) {
-      this.$emit('item-selected', item);
-    },
-    removeItem(item) {
-      this.$emit('item-removed', item);
-    },
+  setup(_, { emit }) {
+    function selectItem(item: Item) {
+      emit('item-selected', item);
+    }
+
+    function removeItem(item: Item) {
+      emit('item-removed', item);
+    }
+
+    return {
+      selectItem,
+      removeItem,
+    };
   },
-};
+});
 </script>
