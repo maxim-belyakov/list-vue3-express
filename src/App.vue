@@ -1,47 +1,70 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div id="app">
+    <h1>Item List</h1>
+    <AddItem @item-added="addItem" />
+    <ItemList :items="items" @item-selected="selectItem" @item-removed="removeItem" />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import ItemList from './components/ItemList.vue';
+import AddItem from './components/AddItem.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+export default {
+  name: 'App',
+  components: {
+    ItemList,
+    AddItem,
+  },
+  setup() {
+    const items = ref([]);
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+    async function fetchItems() {
+      try {
+        const response = await axios.get('http://localhost:3001/items');
+        items.value = response.data;
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+    onMounted(fetchItems);
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+    async function addItem(item) {
+      try {
+        const response = await axios.post('http://localhost:3001/items', item);
+        items.value.push(response.data);
+      } catch (error) {
+        console.error('Error adding item:', error);
+      }
+    }
+
+    function selectItem(selectedItem) {
+      items.value = items.value.map(item => {
+        return {
+          ...item,
+          selected: item.id === selectedItem.id,
+        };
+      });
+    }
+
+    async function removeItem(removedItem) {
+      try {
+        await axios.delete(`http://localhost:3001/items/${removedItem.id}`);
+        items.value = items.value.filter(item => item.id !== removedItem.id);
+      } catch (error) {
+        console.error('Error removing item:', error);
+      }
+    }
+
+    return {
+      items,
+      addItem,
+      selectItem,
+      removeItem,
+    };
+  },
+};
+</script>
