@@ -10,8 +10,8 @@ To get started with this project, clone the repository and follow the instructio
 
 The frontend of the application is built with Vue 3. To run the frontend:
 
-1. Install the dependencies by running `npm install`
-2. Start the development server with `npm run serve`
+1. Install the dependencies by running `yarn install`
+2. Start the development server with `yarn run serve`
 3. Open the application at `http://localhost:8080`
 
 ### Backend
@@ -19,8 +19,8 @@ The frontend of the application is built with Vue 3. To run the frontend:
 The backend of the application is built with Express. To run the backend:
 
 1. Navigate to the `backend` directory with `cd backend`
-2. Install the dependencies by running `npm install`
-3. Start the server with `npm start`
+2. Install the dependencies by running `yarn install`
+3. Start the server with `yarn start`
 4. The server will run on `http://localhost:3001`
 
 ## Dependencies
