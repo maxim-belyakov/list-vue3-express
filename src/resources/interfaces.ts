@@ -1,4 +1,4 @@
-export interface Item {
+export interface ItemType {
     id: number;
     text: string;
     selected?: boolean;

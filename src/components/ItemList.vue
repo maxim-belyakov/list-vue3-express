@@ -7,11 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Item from './Item.vue';
-
-interface Item {
-  id: number;
-  text: string;
-}
+import {ItemType} from "../resources/interfaces";
 
 export default defineComponent({
   name: 'ItemList',
@@ -19,14 +15,14 @@ export default defineComponent({
     Item,
   },
   props: {
-    items: Array as () => Item[],
+    items: Array as () => ItemType[],
   },
   setup(_, { emit }) {
-    function selectItem(item: Item) {
+    function selectItem(item: ItemType) {
       emit('item-selected', item);
     }
 
-    function removeItem(item: Item) {
+    function removeItem(item: ItemType) {
       emit('item-removed', item);
     }
 

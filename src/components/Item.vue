@@ -8,12 +8,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Item } from "../resources/interfaces";
+import { ItemType } from "../resources/interfaces";
 
 export default defineComponent({
   name: 'Item',
   props: {
-    item: Object as () => Item,
+    item: Object as () => ItemType,
   },
   setup(_, { emit }) {
     function selectItem() {

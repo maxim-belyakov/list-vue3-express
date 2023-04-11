@@ -1,9 +1,9 @@
 import { createStore } from 'vuex';
-import { Item } from '../resources/interfaces';
-import { fetchItems, removeItem } from '../api';
+import { ItemType } from '../resources/interfaces';
+import api from '../api';
 
 interface State {
-    items: Item[];
+    items: ItemType[];
 }
 
 const state: State = {
@@ -11,34 +11,51 @@ const state: State = {
 };
 
 const mutations = {
-    setItems(state: State, items: Item[]) {
+    setItems(state: State, items: ItemType[]) {
         state.items = items;
     },
-    addItem(state: State, item: Item) {
+    addItem(state: State, item: ItemType) {
         state.items.push(item);
     },
-    removeItem(state: State, itemId: number) {
-        state.items = state.items.filter(item => item.id !== itemId);
+    updateItem(state: State, item: ItemType) {
+        const index = state.items.findIndex((i) => i.id === item.id);
+        if (index !== -1) {
+            state.items.splice(index, 1, item);
+        }
     },
-    selectItem(state: State, selectedItem: Item) {
-        state.items = state.items.map(item => ({
-            ...item,
-            selected: item.id === selectedItem.id,
-        }));
+    removeItem(state: State, itemId: number) {
+        const index = state.items.findIndex((i) => i.id === itemId);
+        if (index !== -1) {
+            state.items.splice(index, 1);
+        }
     },
 };
 
 const actions = {
     async fetchItems(context: { commit: any }) {
-        const items = await fetchItems();
-        context.commit('setItems', items);
+        try {
+            const items = await api.getItems();
+            context.commit('setItems', items);
+        } catch (error) {
+            console.error('Error fetching items:', error);
+        }
     },
-    async removeItem(context: { commit: any }, itemId: number) {
-        await removeItem(itemId);
-        context.commit('removeItem', itemId);
+    async addItem(context: { commit: any }, item: { text: string }) {
+        const addedItem = await api.addItem(item);
+        context.commit('addItem', addedItem);
     },
-    selectItem(context: { commit: any }, selectedItem: Item) {
-        context.commit('selectItem', selectedItem);
+    async updateItem(context: { commit: any }, item: ItemType) {
+        const updatedItem = await api.updateItem(item);
+        context.commit('updateItem', updatedItem);
+    },
+    async removeItem(context: { commit: any, dispatch: any }, itemId: number) {
+        try {
+            await api.removeItem(itemId);
+            context.commit('removeItem', itemId);
+            await context.dispatch('fetchItems');
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
     },
 };
 
