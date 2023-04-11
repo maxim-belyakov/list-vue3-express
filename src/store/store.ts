@@ -4,10 +4,12 @@ import api from '../api';
 
 interface State {
     items: ItemType[];
+    selectedItems: ItemType[];
 }
 
 const state: State = {
     items: [],
+    selectedItems: [],
 };
 
 const mutations = {
@@ -27,6 +29,20 @@ const mutations = {
         const index = state.items.findIndex((i) => i.id === itemId);
         if (index !== -1) {
             state.items.splice(index, 1);
+        }
+    },
+    selectItem(state: State, item: ItemType) {
+        const index = state.selectedItems.findIndex((i) => i.id === item.id);
+        if (index === -1) {
+            state.selectedItems.push(item);
+        } else {
+            state.selectedItems.splice(index, 1);
+        }
+    },
+    removeSelectedItem(state: State, itemId: number) {
+        const index = state.selectedItems.findIndex((i) => i.id === itemId);
+        if (index !== -1) {
+            state.selectedItems.splice(index, 1);
         }
     },
 };
@@ -52,10 +68,14 @@ const actions = {
         try {
             await api.removeItem(itemId);
             context.commit('removeItem', itemId);
+            context.commit('removeSelectedItem', itemId);
             await context.dispatch('fetchItems');
         } catch (error) {
             console.error('Error removing item:', error);
         }
+    },
+    selectItem(context: { commit: any }, item: ItemType) {
+        context.commit('selectItem', item);
     },
 };
 

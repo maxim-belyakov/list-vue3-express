@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>{{ item.text }}</span>
+    <div>{{ item.text }}</div>
     <button @click="selectItem">Select</button>
     <button @click="removeItem">Remove</button>
   </div>
@@ -13,15 +13,18 @@ import { ItemType } from "../resources/interfaces";
 export default defineComponent({
   name: 'Item',
   props: {
-    item: Object as () => ItemType,
+    item: {
+      type: Object as () => ItemType,
+      required: true,
+    },
   },
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     function selectItem() {
-      emit('item-selected', this.item);
+      emit('item-selected', props.item);
     }
 
     function removeItem() {
-      emit('item-removed', this.item);
+      emit('item-removed', props.item);
     }
 
     return {

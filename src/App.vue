@@ -2,14 +2,15 @@
   <div id="app">
     <h1>Item List</h1>
     <AddItem @item-added="addItem" />
-    <ItemList :items="items" @item-selected="selectItem" @item-removed="removeItem" />
+    <ItemList :items="items" @item-updated="updateItem" @item-removed="removeItem" />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from 'vue';
-import ItemList from './components/ItemList.vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import AddItem from './components/AddItem.vue';
+import Item from './components/Item.vue';
+import ItemList from './components/ItemList.vue';
 import { ItemType } from "./resources/interfaces";
 import { useStore } from 'vuex';
 
@@ -18,6 +19,7 @@ export default defineComponent({
   components: {
     ItemList,
     AddItem,
+    Item,
   },
   setup() {
     const store = useStore();
@@ -26,43 +28,28 @@ export default defineComponent({
       const newItem: ItemType = {
         id: Date.now(),
         text: item.text,
+        selected: false,
       };
       store.dispatch('addItem', newItem);
     }
 
-    function selectItem(selectedItem: ItemType) {
-      store.dispatch('selectItem', selectedItem);
+    function updateItem(updatedItem: ItemType) {
+      store.dispatch('updateItem', updatedItem);
     }
 
-    async function removeItem(removedItem: ItemType) {
+    function removeItem(removedItem: ItemType) {
       store.dispatch('removeItem', removedItem.id);
     }
 
-    onMounted(() => {
-      store.dispatch('fetchItems');
+    onMounted(async () => {
+      await store.dispatch('fetchItems');
     });
-
-    async function updateItem(updatedItem: ItemType) {
-      try {
-        await fetch(`http://localhost:3001/items/${updatedItem.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedItem),
-        });
-        store.dispatch('updateItem', updatedItem);
-      } catch (error) {
-        console.error('Error updating item:', error);
-      }
-    }
 
     return {
       items: computed(() => store.state.items),
       addItem,
-      selectItem,
-      removeItem,
       updateItem,
+      removeItem,
     };
   },
 });
