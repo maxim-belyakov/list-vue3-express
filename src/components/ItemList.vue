@@ -28,8 +28,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const store = useStore();
-
     function selectItem(selectedItem: ItemType) {
       const updatedItem: ItemType = { ...selectedItem, selected: !selectedItem.selected };
       emit('item-updated', updatedItem);
